@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#08090c">
+<link rel="manifest" href="manifest.webmanifest">
 <title>R / Practical Archive</title>
 <style>
 :root{--bg:#08090c;--panel:#0e1015;--panel2:#12151c;--line:#252a34;--text:#d5d9e2;--muted:#7f899b;--accent:#879bb9;--accent2:#a5b5cf;--bright:65%;--contrast:78%;--scale:1}
@@ -83,7 +84,6 @@ input[type=range]{width:100%;accent-color:#7184a0}
   <div class="nav-list">
     <button class="nav-btn active" data-view="home" onclick="showView('home',this)">Overview <span class="nav-count">00</span></button>
     <button class="nav-btn" data-view="setup" onclick="showView('setup',this)">R Setup <span class="nav-count">↗</span></button>
-    <button class="nav-btn" data-view="exam" onclick="showView('exam',this)">Exam Playbook <span class="nav-count">★</span></button>
   </div>
   <div class="nav-label">EXPERIMENTS</div>
   <div class="nav-list" id="subject-nav">
@@ -95,13 +95,15 @@ input[type=range]{width:100%;accent-color:#7184a0}
     <button class="nav-btn" onclick="selectExperiment(6,this)">06 / Cleaning</button>
     <button class="nav-btn" onclick="selectExperiment(7,this)">07 / Regression</button>
     <button class="nav-btn" onclick="selectExperiment(8,this)">08 / Classification</button>
+    <button class="nav-btn" onclick="selectExperiment(9,this)">09 / K-Means</button>
+    <button class="nav-btn" onclick="selectExperiment(10,this)">10 / Time Series</button>
   </div>
-  <div class="sidebar-foot">R PROGRAMMING · EXPERIMENTS 01–08<br>EXAM PLAYBOOK INCLUDED</div>
+  <div class="sidebar-foot">R PROGRAMMING · EXPERIMENTS 01–10<br>STATIC REFERENCE BUILD</div>
 </aside>
 <main>
   <div class="topbar"><span class="crumb">ACADEMIC / PRACTICALS / R</span><span class="status">● ARCHIVE READY</span></div>
   <section id="home-view">
-    <div class="hero"><div class="kicker">SEMESTER V / LAB NOTES</div><h1>R Programming<br>Practical Archive</h1><p>Source-based practical codes plus an exam playbook for understanding programs and adapting them to a supplied dataset.</p><div class="hero-bottom"><div class="stat"><strong>08</strong> EXPERIMENTS</div><div class="stat"><strong>30+</strong> CODE SECTIONS</div><div class="stat">SOURCE-BASED + EXAM SKILLS</div></div></div>
+    <div class="hero"><div class="kicker">SEMESTER V / LAB NOTES</div><h1>R Programming<br>Practical Archive</h1><p>A compact reference for experiments, R syntax, data manipulation, visualization, regression, classification, clustering and time-series forecasting.</p><div class="hero-bottom"><div class="stat"><strong>10</strong> EXPERIMENTS</div><div class="stat"><strong>40+</strong> CODE SECTIONS</div><div class="stat">SOURCE-BASED CONTENT</div></div></div>
     <div class="search-row"><input id="search" class="search" type="search" placeholder="Search experiments, functions, topics…" oninput="searchItems(this.value)"><button class="small-btn" onclick="clearSearch()">CLEAR</button></div>
     <div class="section-heading"><h2>EXPERIMENT INDEX</h2><span>SELECT TO OPEN</span></div>
     <div class="subject-grid">
@@ -144,6 +146,16 @@ input[type=range]{width:100%;accent-color:#7184a0}
         <span class="card-num">EXP 08</span>
         <span class="card-title">Classification using the Iris dataset</span>
         <span class="card-meta">5 practical sections</span>
+      </button>
+      <button class="subject-card" data-exp="9" onclick="selectExperiment(9)">
+        <span class="card-num">EXP 09</span>
+        <span class="card-title">K-Means clustering and customer segmentation</span>
+        <span class="card-meta">7 practical sections</span>
+      </button>
+      <button class="subject-card" data-exp="10" onclick="selectExperiment(10)">
+        <span class="card-num">EXP 10</span>
+        <span class="card-title">Time-series analysis and forecasting</span>
+        <span class="card-meta">7 practical sections</span>
       </button></div>
     <div id="search-results" class="hidden"><div class="section-heading"><h2>SEARCH RESULTS</h2><span id="result-count"></span></div><div id="result-list"></div></div>
     <section class="settings">
@@ -949,99 +961,7 @@ print(paste(&quot;Logistic Regression Accuracy:&quot;,
             round(mean(log_pred == test_log$IsSetosa), 3)))</code></pre>
         </article>
       </section>
-
-  <section id="exam-view" class="hidden">
-    <div class="panel-kicker">PRACTICAL SKILLS / READ · ADAPT · EXPLAIN</div>
-    <h2>Exam Playbook: understand the code</h2>
-    <p class="panel-intro">Use this when the examiner gives you a dataset that is different from the sample. The templates below are supplemental exam guidance, not additional numbered experiments from your code book.</p>
-
-    <article class="experiment-item">
-      <div class="item-head"><div><span class="item-index">FIELD GUIDE 01</span><h3>First five minutes with an unfamiliar CSV</h3></div>
-      <button class="copy-btn" onclick="copyCode('exam-code-1', this)">COPY CODE</button></div>
-      <p class="description">Choose the dataset rather than guessing its path. Inspect names and types before writing analysis. Run one line at a time and check the output.</p>
-      <pre><code id="exam-code-1"># Select the CSV file supplied by the examiner
-data <- read.csv(file.choose())
-
-# Understand the data before using column names
-head(data)
-str(data)
-names(data)
-dim(data)
-summary(data)
-colSums(is.na(data))</code></pre>
-      <p class="description"><strong>Know what each line does:</strong> <code>read.csv()</code> imports the file; <code>head()</code> previews rows; <code>str()</code> shows column types; <code>names()</code> shows exact column names; <code>dim()</code> gives rows and columns; <code>summary()</code> gives quick summaries; <code>is.na()</code> checks missing values.</p>
-    </article>
-
-    <article class="experiment-item">
-      <div class="item-head"><div><span class="item-index">FIELD GUIDE 02</span><h3>Adapt the code to the actual column names</h3></div>
-      <button class="copy-btn" onclick="copyCode('exam-code-2', this)">COPY CODE</button></div>
-      <p class="description">These are examples only. Replace <code>Marks</code>, <code>Grade</code>, <code>Sales</code>, and other names with the exact names shown by <code>names(data)</code>. R is case-sensitive.</p>
-      <pre><code id="exam-code-2"># Filter rows (replace Marks with a real numeric column)
-data[data$Marks > 75, ]
-
-# Create a new column from a condition
-data$Result <- ifelse(data$Marks >= 40, "Pass", "Fail")
-
-# Group and calculate a mean (requires a grouping column)
-aggregate(Marks ~ Grade, data = data, FUN = mean)
-
-# Plot a numeric column
-hist(data$Marks, main = "Marks Distribution", xlab = "Marks")
-
-# Scatter plot: one numeric column against another
-plot(data$Hours, data$Marks,
-     xlab = "Hours", ylab = "Marks")</code></pre>
-      <p class="description"><strong>Do not run this unchanged unless those columns exist.</strong> If your dataset uses different names, substitute the correct ones. If you do not know a column's type, check <code>str(data)</code>.</p>
-    </article>
-
-    <article class="experiment-item">
-      <div class="item-head"><div><span class="item-index">FIELD GUIDE 03</span><h3>Regression template for a supplied dataset</h3></div>
-      <button class="copy-btn" onclick="copyCode('exam-code-3', this)">COPY CODE</button></div>
-      <p class="description">Use when the task asks you to predict a numeric outcome. The formula is <code>outcome ~ predictor</code>; both names must exist in your data.</p>
-      <pre><code id="exam-code-3"># Replace Outcome and Predictor with real column names
-model <- lm(Outcome ~ Predictor, data = data)
-summary(model)
-
-predicted <- predict(model, newdata = data)
-head(predicted)
-
-plot(data$Predictor, data$Outcome,
-     xlab = "Predictor", ylab = "Outcome")
-abline(model)</code></pre>
-      <p class="description"><strong>Explain it aloud:</strong> <code>lm()</code> fits a linear model; the left side of <code>~</code> is the outcome; the right side is the predictor; <code>summary()</code> reports model details; <code>predict()</code> estimates outcomes for supplied rows.</p>
-    </article>
-
-    <article class="experiment-item">
-      <div class="item-head"><div><span class="item-index">FIELD GUIDE 04</span><h3>Common errors and how to fix them</h3></div></div>
-      <ul>
-        <li><strong>“cannot open file”:</strong> choose the correct file with <code>file.choose()</code>, or check the working directory with <code>getwd()</code>.</li>
-        <li><strong>“object not found”:</strong> check spelling and capitalization with <code>names(data)</code>; ensure the object was created in this session.</li>
-        <li><strong>“undefined columns selected”:</strong> the requested column is not in the data; inspect <code>names(data)</code> and update the code.</li>
-        <li><strong>“could not find function”:</strong> the function may come from a package; confirm it is installed, then call <code>library(packageName)</code>.</li>
-        <li><strong>Missing values cause NA output:</strong> inspect with <code>colSums(is.na(data))</code>; use <code>na.rm = TRUE</code> only where appropriate, or handle missing rows deliberately.</li>
-        <li><strong>Plot or model fails:</strong> verify the selected columns are numeric when required and that the task's variables match the formula.</li>
-      </ul>
-    </article>
-
-    <article class="experiment-item">
-      <div class="item-head"><div><span class="item-index">SELF-TEST</span><h3>Can you explain these without looking?</h3></div></div>
-      <p class="description">Try answering first. Open each answer only after you have attempted it.</p>
-      <details><summary>What is the difference between &lt;- and ==?</summary><p><code>&lt;-</code> assigns a value to an object. <code>==</code> compares two values and returns TRUE or FALSE.</p></details>
-      <details><summary>What does %% do in the even/odd program?</summary><p>It returns the remainder after division. If <code>n %% 2 == 0</code>, the number is even.</p></details>
-      <details><summary>Why use set.seed(123) before splitting Iris data?</summary><p>It makes the random split reproducible so the same sample selection can be repeated in a matching R environment.</p></details>
-      <details><summary>What is the difference between a data frame and a list?</summary><p>A data frame stores tabular data with equal-length columns. A list can hold components of different types and sizes.</p></details>
-      <details><summary>Why does kNN normalize predictors?</summary><p>kNN uses distances. Scaling helps variables with larger numeric ranges from dominating those distances.</p></details>
-      <details><summary>Why is logistic regression in the Iris example not directly comparable to the tree accuracy?</summary><p>The logistic model predicts setosa versus non-setosa (two classes), while the tree and kNN predict all three Iris species. They are different classification tasks.</p></details>
-      <details><summary>What must you check before running a CSV program in the exam?</summary><p>The file path, exact column names, data types, missing values, and whether required packages are installed.</p></details>
-    </article>
-
-    <article class="experiment-item">
-      <div class="item-head"><div><span class="item-index">EXAM RULE</span><h3>Use the website to learn, not to blindly paste</h3></div></div>
-      <p class="description">For each program: (1) state its purpose, (2) identify the input and output, (3) explain the important functions, (4) predict the result for a small example, and (5) change one value or column name yourself. In the exam, use only the tools and resources your examiner permits.</p>
-    </article>
-  </section>
-
-  <div class="footer"><span>R / PRACTICAL ARCHIVE</span><span>SOURCE EXPERIMENTS 1–8 · EXAM PLAYBOOK</span></div>
+  <div class="footer"><span>R / PRACTICAL ARCHIVE</span><span>REFERENCE CONTENT · EXPERIMENTS 1–8</span></div>
 </main>
 </div>
 <div class="quick-hide" id="quick-hide"><span>ARCHIVE PAUSED</span><button onclick="toggleHide()">RETURN TO ARCHIVE · ESC</button></div>
@@ -1049,8 +969,8 @@ abline(model)</code></pre>
 const panels = [...document.querySelectorAll('.experiment-panel')];
 function hideViews(){document.getElementById('home-view').classList.add('hidden');document.getElementById('setup-view').classList.add('hidden');panels.forEach(p=>p.classList.remove('active'));}
 function markNav(el){document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));if(el)el.classList.add('active');}
-function showView(view,el){hideViews();markNav(el);if(view==='home'){document.getElementById('home-view').classList.remove('hidden')}else if(view==='setup'){document.getElementById('setup-view').classList.remove('hidden')}else if(view==='exam'){document.getElementById('exam-view').classList.remove('hidden')}}
-function selectExperiment(id,el){hideViews();const p=document.getElementById('experiment-'+id);if(p)p.classList.add('active');if(el)markNav(el);else{markNav(document.querySelector('#subject-nav .nav-btn:nth-child('+id+')'))}window.scrollTo({top:0,behavior:'instant'});}
+function showView(view,el){hideViews();markNav(el);if(view==='home'){document.getElementById('home-view').classList.remove('hidden')}else if(view==='setup'){document.getElementById('setup-view').classList.remove('hidden')}}
+function selectExperiment(id,el){hideViews();const p=document.getElementById('experiment-'+id);if(p)p.classList.add('active');if(el)markNav(el);else{markNav(document.querySelector('#subject-nav .nav-btn:nth-child('+ (id+2) +')'))}window.scrollTo({top:0,behavior:'instant'});}
 async function copyCode(id,btn){const el=document.getElementById(id);if(!el)return;try{await navigator.clipboard.writeText(el.innerText);btn.textContent='COPIED';setTimeout(()=>btn.textContent='COPY CODE',1200)}catch(e){const r=document.createRange();r.selectNodeContents(el);const s=window.getSelection();s.removeAllRanges();s.addRange(r);btn.textContent='SELECTED — COPY';}}
 function searchItems(q){q=q.trim().toLowerCase();const resultBox=document.getElementById('search-results'),list=document.getElementById('result-list');if(!q){resultBox.classList.add('hidden');document.querySelectorAll('.subject-card').forEach(c=>c.classList.remove('hidden'));return}
 const hits=[];document.querySelectorAll('.experiment-item').forEach((item)=>{const text=(item.innerText+' '+(item.dataset.search||'')).toLowerCase();if(text.includes(q)){const panel=item.closest('.experiment-panel');hits.push({title:item.querySelector('h3')?.innerText||item.querySelector('h2')?.innerText||'Setup reference',exp:panel?.id.replace('experiment-',''),id:item.id,desc:item.querySelector('.description')?.innerText||''})}});
@@ -1064,6 +984,7 @@ function resetDisplay(){document.getElementById('brightness').value=65;document.
 function toggleHide(){document.getElementById('quick-hide').classList.toggle('show')}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.getElementById('quick-hide').classList.remove('show')}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();document.getElementById('search').focus()}});
 try{const saved=JSON.parse(localStorage.getItem('rarchive-display')||'null');if(saved){document.getElementById('brightness').value=saved.b;document.getElementById('contrast').value=saved.c;document.getElementById('textsize').value=saved.t;setTextSize()}}catch(e){}
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) { window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {})); }
 </script>
 </body>
 </html>
