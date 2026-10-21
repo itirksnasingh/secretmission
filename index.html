@@ -1,0 +1,1069 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#08090c">
+<title>R / Practical Archive</title>
+<style>
+:root{--bg:#08090c;--panel:#0e1015;--panel2:#12151c;--line:#252a34;--text:#d5d9e2;--muted:#7f899b;--accent:#879bb9;--accent2:#a5b5cf;--bright:65%;--contrast:78%;--scale:1}
+*{box-sizing:border-box}
+html{background:var(--bg);color-scheme:dark}
+body{margin:0;background:var(--bg);color:var(--text);font:13px/1.6 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;filter:brightness(var(--bright)) contrast(var(--contrast));min-height:100vh}
+button,input{font:inherit}
+button{cursor:pointer}
+a{color:inherit}
+.shell{display:grid;grid-template-columns:226px minmax(0,1fr);min-height:100vh}
+.sidebar{border-right:1px solid var(--line);background:#090a0e;padding:22px 14px;position:sticky;top:0;height:100vh;overflow:auto}
+.brand{display:flex;align-items:center;gap:10px;padding:3px 8px 22px;border-bottom:1px solid var(--line)}
+.brand-mark{width:29px;height:29px;border:1px solid #53617a;display:grid;place-items:center;color:var(--accent2);font-size:11px}
+.brand-name{font-weight:700;letter-spacing:.14em;font-size:12px}.brand-sub{font-size:9px;color:var(--muted);letter-spacing:.12em}
+.nav-label{color:#5f6979;font-size:9px;letter-spacing:.16em;margin:24px 9px 9px}
+.nav-btn{display:flex;align-items:center;justify-content:space-between;width:100%;padding:10px 10px;background:transparent;border:1px solid transparent;color:#8e97a8;text-align:left;margin:3px 0;font-size:11px}
+.nav-btn:hover,.nav-btn.active{background:#12151c;border-color:#262c38;color:#e0e5ee}
+.nav-count{font-size:10px;color:#667287}
+.sidebar-foot{margin-top:30px;padding:12px 9px;border-top:1px solid var(--line);color:#626c7e;font-size:10px}
+main{min-width:0;max-width:1240px;width:100%;margin:0 auto;padding:24px clamp(16px,3vw,42px) 60px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.crumb{font-size:10px;color:#6f7a8d;letter-spacing:.13em}
+.status{font-size:9px;letter-spacing:.1em;border:1px solid #28313d;color:#8798b0;padding:5px 8px}
+.hero{padding:31px 0 26px}
+.kicker{font-size:10px;letter-spacing:.19em;color:#75839a}
+h1{font-size:clamp(23px,3vw,34px);line-height:1.2;letter-spacing:-.05em;font-weight:500;margin:12px 0 10px;color:#e0e4ec}
+.hero p,.panel-intro{color:#7e8797;font-size:11px;max-width:650px}
+.hero-bottom{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.stat{border:1px solid var(--line);padding:8px 11px;color:#9ba4b4;font-size:10px}
+.stat strong{color:#d4dae5;font-weight:500}
+.search-row{display:flex;gap:8px;margin:8px 0 23px}
+.search{flex:1;min-width:0;background:#0d0f14;border:1px solid #2a303b;color:var(--text);padding:12px 13px;outline:none}
+.search:focus{border-color:#697d9a}
+.small-btn,.copy-btn{border:1px solid #2a303b;background:#10131a;color:#9ba6b8;padding:9px 12px;font-size:9px;letter-spacing:.08em}
+.small-btn:hover,.copy-btn:hover{border-color:#697d9a;color:#e0e5ee}
+.section-heading{display:flex;justify-content:space-between;align-items:end;margin:24px 0 12px;gap:12px}
+.section-heading h2{font-size:12px;letter-spacing:.1em;font-weight:500;margin:0}
+.section-heading span{color:#6f798b;font-size:10px}
+.subject-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.subject-card{background:#0d0f14;border:1px solid #242a34;padding:17px;text-align:left;min-height:112px;display:flex;flex-direction:column;align-items:flex-start;gap:7px;color:var(--text)}
+.subject-card:hover,.subject-card.active{background:#131720;border-color:#52627b}
+.card-num{font-size:9px;letter-spacing:.12em;color:#7386a2}
+.card-title{font-size:12px;color:#d0d6e0}
+.card-meta{font-size:10px;color:#707b8d}
+.experiment-panel{display:none}
+.experiment-panel.active{display:block}
+.panel-kicker{color:#75849a;font-size:9px;letter-spacing:.17em;margin:23px 0 8px}
+.experiment-panel h2{font-size:clamp(20px,2.7vw,29px);font-weight:500;line-height:1.25;margin:0 0 8px;letter-spacing:-.04em}
+.experiment-item{border:1px solid var(--line);background:#0b0d12;margin:13px 0;padding:17px}
+.item-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.item-head>div{min-width:0}
+.item-index{font-size:9px;color:#7387a5;letter-spacing:.1em}
+.experiment-item h3{font-size:12px;line-height:1.5;font-weight:500;margin:3px 0;color:#d0d6e0}
+.description{font:11px/1.7 system-ui,sans-serif;color:#828b9c;margin:7px 0 13px}
+pre{margin:0;background:#08090d;border:1px solid #1b2029;padding:14px;overflow:auto;white-space:pre;tab-size:4;color:#b8c3d6;font:11px/1.75 ui-monospace,SFMono-Regular,Consolas,monospace}
+.code-comment{color:#66758b}
+.settings{margin-top:28px;border:1px solid var(--line);background:#0b0d12;padding:16px}
+.settings h2{font-size:11px;font-weight:500;letter-spacing:.12em;margin:0 0 14px}
+.setting{display:grid;grid-template-columns:130px minmax(80px,1fr) 35px;gap:12px;align-items:center;margin:13px 0;color:#909aaa;font-size:10px}
+input[type=range]{width:100%;accent-color:#7184a0}
+.setting output{text-align:right;color:#c1cad8}
+.footer{margin-top:30px;border-top:1px solid var(--line);padding-top:14px;color:#596477;font-size:9px;display:flex;justify-content:space-between;gap:10px}
+.hidden{display:none!important}
+.quick-hide{position:fixed;inset:0;background:#08090c;z-index:99;display:none;align-items:center;justify-content:center;color:#343b48}
+.quick-hide.show{display:flex}
+.quick-hide button{position:absolute;bottom:24px;right:24px;background:#11141a;color:#7c8798;border:1px solid #252b35;padding:8px 12px;font-size:10px}
+.quick-hide span{font-size:10px;letter-spacing:.2em}
+@media(max-width:720px){.shell{grid-template-columns:1fr}.sidebar{position:relative;height:auto;padding:12px;border-right:0;border-bottom:1px solid var(--line)}.brand{padding-bottom:10px}.sidebar .nav-label,.sidebar-foot{display:none}.nav-list{display:flex;overflow:auto;gap:5px;padding-top:8px}.nav-btn{white-space:nowrap;width:auto;margin:0;padding:8px}.subject-grid{grid-template-columns:1fr}.subject-card{min-height:80px}.topbar{padding-bottom:12px}main{padding-top:16px}.setting{grid-template-columns:100px 1fr 30px}}
+@media print{body{filter:none;background:#fff;color:#111}.sidebar,.topbar,.search-row,.settings,.copy-btn,.footer{display:none!important}.shell{display:block}main{max-width:none;padding:0}.experiment-panel{display:block!important}.experiment-item,pre{background:#fff;color:#111;border-color:#ccc;break-inside:avoid}.description{color:#444}.experiment-panel h2,.experiment-item h3{color:#111}}
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+  <div class="brand"><div class="brand-mark">R/</div><div><div class="brand-name">LAB_ARCHIVE</div><div class="brand-sub">PRACTICAL REFERENCE</div></div></div>
+  <div class="nav-label">WORKSPACE</div>
+  <div class="nav-list">
+    <button class="nav-btn active" data-view="home" onclick="showView('home',this)">Overview <span class="nav-count">00</span></button>
+    <button class="nav-btn" data-view="setup" onclick="showView('setup',this)">R Setup <span class="nav-count">↗</span></button>
+    <button class="nav-btn" data-view="exam" onclick="showView('exam',this)">Exam Playbook <span class="nav-count">★</span></button>
+  </div>
+  <div class="nav-label">EXPERIMENTS</div>
+  <div class="nav-list" id="subject-nav">
+    <button class="nav-btn" onclick="selectExperiment(1,this)">01 / Basics</button>
+    <button class="nav-btn" onclick="selectExperiment(2,this)">02 / R & Packages</button>
+    <button class="nav-btn" onclick="selectExperiment(3,this)">03 / Data Structures</button>
+    <button class="nav-btn" onclick="selectExperiment(4,this)">04 / CSV & Summaries</button>
+    <button class="nav-btn" onclick="selectExperiment(5,this)">05 / Joins & Plots</button>
+    <button class="nav-btn" onclick="selectExperiment(6,this)">06 / Cleaning</button>
+    <button class="nav-btn" onclick="selectExperiment(7,this)">07 / Regression</button>
+    <button class="nav-btn" onclick="selectExperiment(8,this)">08 / Classification</button>
+  </div>
+  <div class="sidebar-foot">R PROGRAMMING · EXPERIMENTS 01–08<br>EXAM PLAYBOOK INCLUDED</div>
+</aside>
+<main>
+  <div class="topbar"><span class="crumb">ACADEMIC / PRACTICALS / R</span><span class="status">● ARCHIVE READY</span></div>
+  <section id="home-view">
+    <div class="hero"><div class="kicker">SEMESTER V / LAB NOTES</div><h1>R Programming<br>Practical Archive</h1><p>Source-based practical codes plus an exam playbook for understanding programs and adapting them to a supplied dataset.</p><div class="hero-bottom"><div class="stat"><strong>08</strong> EXPERIMENTS</div><div class="stat"><strong>30+</strong> CODE SECTIONS</div><div class="stat">SOURCE-BASED + EXAM SKILLS</div></div></div>
+    <div class="search-row"><input id="search" class="search" type="search" placeholder="Search experiments, functions, topics…" oninput="searchItems(this.value)"><button class="small-btn" onclick="clearSearch()">CLEAR</button></div>
+    <div class="section-heading"><h2>EXPERIMENT INDEX</h2><span>SELECT TO OPEN</span></div>
+    <div class="subject-grid">
+      <button class="subject-card" data-exp="1" onclick="selectExperiment(1)">
+        <span class="card-num">EXP 01</span>
+        <span class="card-title">Basic operations, conditions and loops</span>
+        <span class="card-meta">9 practical sections</span>
+      </button>
+      <button class="subject-card" data-exp="2" onclick="selectExperiment(2)">
+        <span class="card-num">EXP 02</span>
+        <span class="card-title">R basics and packages</span>
+        <span class="card-meta">2 practical sections</span>
+      </button>
+      <button class="subject-card" data-exp="3" onclick="selectExperiment(3)">
+        <span class="card-num">EXP 03</span>
+        <span class="card-title">Vectors, lists and data frames</span>
+        <span class="card-meta">4 practical sections</span>
+      </button>
+      <button class="subject-card" data-exp="4" onclick="selectExperiment(4)">
+        <span class="card-num">EXP 04</span>
+        <span class="card-title">CSV import, manipulation and summaries</span>
+        <span class="card-meta">5 practical sections</span>
+      </button>
+      <button class="subject-card" data-exp="5" onclick="selectExperiment(5)">
+        <span class="card-num">EXP 05</span>
+        <span class="card-title">Reshaping, joins and interactive plots</span>
+        <span class="card-meta">4 practical sections</span>
+      </button>
+      <button class="subject-card" data-exp="6" onclick="selectExperiment(6)">
+        <span class="card-num">EXP 06</span>
+        <span class="card-title">Data cleaning, descriptive statistics and visualization</span>
+        <span class="card-meta">4 practical sections</span>
+      </button>
+      <button class="subject-card" data-exp="7" onclick="selectExperiment(7)">
+        <span class="card-num">EXP 07</span>
+        <span class="card-title">Simple and multiple linear regression</span>
+        <span class="card-meta">3 practical sections</span>
+      </button>
+      <button class="subject-card" data-exp="8" onclick="selectExperiment(8)">
+        <span class="card-num">EXP 08</span>
+        <span class="card-title">Classification using the Iris dataset</span>
+        <span class="card-meta">5 practical sections</span>
+      </button></div>
+    <div id="search-results" class="hidden"><div class="section-heading"><h2>SEARCH RESULTS</h2><span id="result-count"></span></div><div id="result-list"></div></div>
+    <section class="settings">
+      <h2>DISPLAY / STEALTH SETTINGS</h2>
+      <div class="setting"><label for="brightness">Page brightness</label><input id="brightness" type="range" min="25" max="100" step="5" value="65" oninput="setDisplay()"><output id="brightness-out">65%</output></div>
+      <div class="setting"><label for="contrast">Contrast</label><input id="contrast" type="range" min="50" max="100" step="5" value="78" oninput="setDisplay()"><output id="contrast-out">78%</output></div>
+      <div class="setting"><label for="textsize">Text size</label><input id="textsize" type="range" min="10" max="15" step="1" value="13" oninput="setTextSize()"><output id="textsize-out">13px</output></div>
+      <div class="hero-bottom"><button class="small-btn" onclick="toggleHide()">QUICK HIDE · ESC</button><button class="small-btn" onclick="window.print()">PRINT / SAVE PDF</button><button class="small-btn" onclick="resetDisplay()">RESET DISPLAY</button></div>
+    </section>
+  </section>
+  <section id="setup-view" class="hidden">
+    <div class="panel-kicker">REFERENCE / ENVIRONMENT</div><h2>R Setup & CSV Paths</h2><p class="panel-intro">Setup notes and commands from the supplied code book (pages 13–14).</p>
+    
+    <article class="experiment-item">
+      <div class="item-head"><div><span class="item-index">SETUP 01</span><h3>Install packages once if missing</h3></div>
+      <button class="copy-btn" onclick="copyCode('setup-code-1', this)">COPY CODE</button></div>
+      <p class="description">An internet connection may be required to install packages.</p>
+      <pre><code id="setup-code-1">install.packages(&quot;ggplot2&quot;)
+install.packages(&quot;dplyr&quot;)
+install.packages(&quot;tidyr&quot;)
+install.packages(&quot;plotly&quot;)
+install.packages(&quot;rpart&quot;)
+install.packages(&quot;rpart.plot&quot;)
+install.packages(&quot;class&quot;)
+install.packages(&quot;car&quot;)
+install.packages(&quot;moments&quot;)</code></pre>
+    </article>
+    <article class="experiment-item">
+      <div class="item-head"><div><span class="item-index">SETUP 02</span><h3>Load packages in a new R session</h3></div>
+      <button class="copy-btn" onclick="copyCode('setup-code-2', this)">COPY CODE</button></div>
+      <p class="description">Only load packages needed by the experiment you are running.</p>
+      <pre><code id="setup-code-2">library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(plotly)
+library(rpart)
+library(rpart.plot)
+library(class)
+library(car)
+library(moments)</code></pre>
+    </article>
+    <article class="experiment-item">
+      <div class="item-head"><div><span class="item-index">SETUP 03</span><h3>Install a package only if missing</h3></div>
+      <button class="copy-btn" onclick="copyCode('setup-code-3', this)">COPY CODE</button></div>
+      <p class="description">This checks whether ggplot2 is installed before attempting installation.</p>
+      <pre><code id="setup-code-3">if (!requireNamespace(&quot;ggplot2&quot;, quietly = TRUE)) {
+    install.packages(&quot;ggplot2&quot;)
+}
+library(ggplot2)</code></pre>
+    </article>
+    <article class="experiment-item">
+      <div class="item-head"><div><span class="item-index">SETUP 04</span><h3>Choose a CSV file interactively</h3></div>
+      <button class="copy-btn" onclick="copyCode('setup-code-4', this)">COPY CODE</button></div>
+      <p class="description">Select the CSV file from the file dialog.</p>
+      <pre><code id="setup-code-4">data &lt;- read.csv(file.choose())
+head(data)
+str(data)
+summary(data)</code></pre>
+    </article>
+    <article class="experiment-item">
+      <div class="item-head"><div><span class="item-index">SETUP 05</span><h3>Read a CSV using a full Windows path</h3></div>
+      <button class="copy-btn" onclick="copyCode('setup-code-5', this)">COPY CODE</button></div>
+      <p class="description">Replace YourName and filename.csv with the actual folder and file names.</p>
+      <pre><code id="setup-code-5">data &lt;- read.csv(&quot;C:/Users/YourName/Downloads/filename.csv&quot;)
+
+# Or escape each backslash:
+data &lt;- read.csv(&quot;C:\\Users\\YourName\\Downloads\\filename.csv&quot;)</code></pre>
+    </article>
+  </section>
+  
+      <section class="experiment-panel" id="experiment-1" data-title="basic operations, conditions and loops">
+        <div class="panel-kicker">R PROGRAMMING / EXPERIMENT 01</div>
+        <h2>Basic operations, conditions and loops</h2>
+        <p class="panel-intro">Reference material from your uploaded R Programming Practical Code Book.</p>
+        
+        <article class="experiment-item" id="item-1-1" data-search="1.1 basic arithmetic operations calculates sum, difference, product and division using two numeric variables.">
+          <div class="item-head">
+            <div><span class="item-index">1.1</span><h3>Basic arithmetic operations</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-1-1', this)">COPY CODE</button>
+          </div>
+          <p class="description">Calculates sum, difference, product and division using two numeric variables.</p>
+          <pre><code id="code-1-1">a &lt;- 10
+b &lt;- 5
+
+sum_result &lt;- a + b
+difference &lt;- a - b
+product &lt;- a * b
+division &lt;- a / b
+
+print(sum_result)
+print(difference)
+print(product)
+print(division)</code></pre>
+        </article>
+        <article class="experiment-item" id="item-1-2" data-search="1.2 even or odd (input from user) reads an integer and uses the remainder operator %% to determine whether it is even or odd.">
+          <div class="item-head">
+            <div><span class="item-index">1.2</span><h3>Even or odd (input from user)</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-1-2', this)">COPY CODE</button>
+          </div>
+          <p class="description">Reads an integer and uses the remainder operator %% to determine whether it is even or odd.</p>
+          <pre><code id="code-1-2">n &lt;- as.integer(readline(&quot;Enter a number: &quot;))
+
+if (n %% 2 == 0) {
+    print(&quot;Even number&quot;)
+} else {
+    print(&quot;Odd number&quot;)
+}</code></pre>
+        </article>
+        <article class="experiment-item" id="item-1-3" data-search="1.3 simple if-else and nested if demonstrates if, else if, else and a nested condition.">
+          <div class="item-head">
+            <div><span class="item-index">1.3</span><h3>Simple if-else and nested if</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-1-3', this)">COPY CODE</button>
+          </div>
+          <p class="description">Demonstrates if, else if, else and a nested condition.</p>
+          <pre><code id="code-1-3">x &lt;- as.integer(readline(&quot;Enter a number: &quot;))
+
+if (x &gt; 0) {
+    print(&quot;Positive&quot;)
+} else if (x &lt; 0) {
+    print(&quot;Negative&quot;)
+} else {
+    print(&quot;Zero&quot;)
+}
+
+if (x &gt; 0) {
+    if (x %% 2 == 0) {
+        print(&quot;Positive even number&quot;)
+    } else {
+        print(&quot;Positive odd number&quot;)
+    }
+} else {
+    print(&quot;Number is zero or negative&quot;)
+}</code></pre>
+        </article>
+        <article class="experiment-item" id="item-1-4" data-search="1.4 sum of numbers using for loop adds integers from 1 through 10 using a for loop.">
+          <div class="item-head">
+            <div><span class="item-index">1.4</span><h3>Sum of numbers using for loop</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-1-4', this)">COPY CODE</button>
+          </div>
+          <p class="description">Adds integers from 1 through 10 using a for loop.</p>
+          <pre><code id="code-1-4">total &lt;- 0
+
+for (i in 1:10) {
+    total &lt;- total + i
+}
+
+print(total)</code></pre>
+        </article>
+        <article class="experiment-item" id="item-1-5" data-search="1.5 multiplication table prints the multiplication table of a user-entered integer.">
+          <div class="item-head">
+            <div><span class="item-index">1.5</span><h3>Multiplication table</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-1-5', this)">COPY CODE</button>
+          </div>
+          <p class="description">Prints the multiplication table of a user-entered integer.</p>
+          <pre><code id="code-1-5">num &lt;- as.integer(readline(&quot;Enter a number: &quot;))
+
+for (i in 1:10) {
+    print(paste(num, &quot;x&quot;, i, &quot;=&quot;, num * i))
+}</code></pre>
+        </article>
+        <article class="experiment-item" id="item-1-6" data-search="1.6 factorial using while loop calculates a factorial with a while loop. enter a non-negative integer.">
+          <div class="item-head">
+            <div><span class="item-index">1.6</span><h3>Factorial using while loop</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-1-6', this)">COPY CODE</button>
+          </div>
+          <p class="description">Calculates a factorial with a while loop. Enter a non-negative integer.</p>
+          <pre><code id="code-1-6">n &lt;- as.integer(readline(&quot;Enter a non-negative integer: &quot;))
+fact &lt;- 1
+i &lt;- 1
+
+while (i &lt;= n) {
+    fact &lt;- fact * i
+    i &lt;- i + 1
+}
+
+print(fact)</code></pre>
+        </article>
+        <article class="experiment-item" id="item-1-7" data-search="1.7 repeat loop with break uses repeat to print values and break to exit the loop.">
+          <div class="item-head">
+            <div><span class="item-index">1.7</span><h3>Repeat loop with break</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-1-7', this)">COPY CODE</button>
+          </div>
+          <p class="description">Uses repeat to print values and break to exit the loop.</p>
+          <pre><code id="code-1-7">i &lt;- 1
+
+repeat {
+    print(i)
+    i &lt;- i + 1
+
+    if (i &gt; 5) {
+        break
+    }
+}</code></pre>
+        </article>
+        <article class="experiment-item" id="item-1-8" data-search="1.8 star pattern using nested loops prints a triangular star pattern using nested loops.">
+          <div class="item-head">
+            <div><span class="item-index">1.8</span><h3>Star pattern using nested loops</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-1-8', this)">COPY CODE</button>
+          </div>
+          <p class="description">Prints a triangular star pattern using nested loops.</p>
+          <pre><code id="code-1-8">for (i in 1:5) {
+    for (j in 1:i) {
+        cat(&quot;* &quot;)
+    }
+    cat(&quot;\n&quot;)
+}</code></pre>
+        </article>
+        <article class="experiment-item" id="item-1-9" data-search="1.9 loop through vector iterates through each value in a vector.">
+          <div class="item-head">
+            <div><span class="item-index">1.9</span><h3>Loop through vector</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-1-9', this)">COPY CODE</button>
+          </div>
+          <p class="description">Iterates through each value in a vector.</p>
+          <pre><code id="code-1-9">values &lt;- c(10, 20, 30, 40)
+
+for (value in values) {
+    print(value)
+}</code></pre>
+        </article>
+      </section>
+      <section class="experiment-panel" id="experiment-2" data-title="r basics and packages">
+        <div class="panel-kicker">R PROGRAMMING / EXPERIMENT 02</div>
+        <h2>R basics and packages</h2>
+        <p class="panel-intro">Reference material from your uploaded R Programming Practical Code Book.</p>
+        
+        <article class="experiment-item" id="item-2-1" data-search="2.1 hello r and basic functions introduces print(), class(), typeof() and the help operator ?.">
+          <div class="item-head">
+            <div><span class="item-index">2.1</span><h3>Hello R and basic functions</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-2-1', this)">COPY CODE</button>
+          </div>
+          <p class="description">Introduces print(), class(), typeof() and the help operator ?.</p>
+          <pre><code id="code-2-1">print(&quot;Hello R&quot;)
+
+x &lt;- 25
+print(x)
+class(x)
+typeof(x)
+?mean</code></pre>
+        </article>
+        <article class="experiment-item" id="item-2-2" data-search="2.2 install and load packages install packages only when missing; library() loads a package for the current session. internet may be required to install.">
+          <div class="item-head">
+            <div><span class="item-index">2.2</span><h3>Install and load packages</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-2-2', this)">COPY CODE</button>
+          </div>
+          <p class="description">Install packages only when missing; library() loads a package for the current session. Internet may be required to install.</p>
+          <pre><code id="code-2-2"># Run install.packages() only if packages are not installed.
+install.packages(&quot;ggplot2&quot;)
+library(ggplot2)</code></pre>
+        </article>
+      </section>
+      <section class="experiment-panel" id="experiment-3" data-title="vectors, lists and data frames">
+        <div class="panel-kicker">R PROGRAMMING / EXPERIMENT 03</div>
+        <h2>Vectors, lists and data frames</h2>
+        <p class="panel-intro">Reference material from your uploaded R Programming Practical Code Book.</p>
+        
+        <article class="experiment-item" id="item-3-1" data-search="3.1 vector operations creates a vector and demonstrates indexing, arithmetic, sum, mean and length.">
+          <div class="item-head">
+            <div><span class="item-index">3.1</span><h3>Vector operations</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-3-1', this)">COPY CODE</button>
+          </div>
+          <p class="description">Creates a vector and demonstrates indexing, arithmetic, sum, mean and length.</p>
+          <pre><code id="code-3-1">v &lt;- c(10, 20, 30, 40, 50)
+
+print(v)
+print(v[2])
+print(v + 5)
+print(v * 2)
+print(sum(v))
+print(mean(v))
+print(length(v))</code></pre>
+        </article>
+        <article class="experiment-item" id="item-3-2" data-search="3.2 list with different data types creates a list containing character, numeric, logical and vector values.">
+          <div class="item-head">
+            <div><span class="item-index">3.2</span><h3>List with different data types</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-3-2', this)">COPY CODE</button>
+          </div>
+          <p class="description">Creates a list containing character, numeric, logical and vector values.</p>
+          <pre><code id="code-3-2">my_list &lt;- list(
+    name = &quot;Amit&quot;,
+    age = 20,
+    passed = TRUE,
+    marks = c(75, 80, 90)
+)
+
+print(my_list)
+print(my_list$name)
+print(my_list[[2]])</code></pre>
+        </article>
+        <article class="experiment-item" id="item-3-3" data-search="3.3 create and access a data frame creates a student data frame and selects columns, rows and filtered records.">
+          <div class="item-head">
+            <div><span class="item-index">3.3</span><h3>Create and access a data frame</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-3-3', this)">COPY CODE</button>
+          </div>
+          <p class="description">Creates a student data frame and selects columns, rows and filtered records.</p>
+          <pre><code id="code-3-3">students &lt;- data.frame(
+    ID = c(1, 2, 3),
+    Name = c(&quot;Rahul&quot;, &quot;Anita&quot;, &quot;Suresh&quot;),
+    Marks = c(78, 85, 92)
+)
+
+print(students)
+print(students$Name)
+print(students[2, ])
+print(students[students$Marks &gt; 80, ])</code></pre>
+        </article>
+        <article class="experiment-item" id="item-3-4" data-search="3.4 matrix and array basics creates a matrix and a multidimensional array; demonstrates indexing, transpose and dimensions.">
+          <div class="item-head">
+            <div><span class="item-index">3.4</span><h3>Matrix and array basics</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-3-4', this)">COPY CODE</button>
+          </div>
+          <p class="description">Creates a matrix and a multidimensional array; demonstrates indexing, transpose and dimensions.</p>
+          <pre><code id="code-3-4">m &lt;- matrix(1:9, nrow = 3, ncol = 3)
+print(m)
+print(m[2, 3])
+print(t(m))
+print(dim(m))
+
+arr &lt;- array(1:12, dim = c(2, 3, 2))
+print(arr)</code></pre>
+        </article>
+      </section>
+      <section class="experiment-panel" id="experiment-4" data-title="csv import, manipulation and summaries">
+        <div class="panel-kicker">R PROGRAMMING / EXPERIMENT 04</div>
+        <h2>CSV import, manipulation and summaries</h2>
+        <p class="panel-intro">Reference material from your uploaded R Programming Practical Code Book.</p>
+        
+        <article class="experiment-item" id="item-4-1" data-search="4.1 read a csv and inspect it the source expects a csv with suitable columns such as name, marks and grade; the filename/path must match your file.">
+          <div class="item-head">
+            <div><span class="item-index">4.1</span><h3>Read a CSV and inspect it</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-4-1', this)">COPY CODE</button>
+          </div>
+          <p class="description">The source expects a CSV with suitable columns such as Name, Marks and Grade; the filename/path must match your file.</p>
+          <pre><code id="code-4-1">students &lt;- read.csv(&quot;students.csv&quot;)
+
+head(students, 5)
+str(students)
+summary(students)
+nrow(students)
+ncol(students)</code></pre>
+        </article>
+        <article class="experiment-item" id="item-4-2" data-search="4.2 add pass/fail result and filter marks adds a pass/fail column and filters students with marks above 75.">
+          <div class="item-head">
+            <div><span class="item-index">4.2</span><h3>Add Pass/Fail result and filter marks</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-4-2', this)">COPY CODE</button>
+          </div>
+          <p class="description">Adds a Pass/Fail column and filters students with marks above 75.</p>
+          <pre><code id="code-4-2">students$Result &lt;- ifelse(students$Marks &gt;= 40, &quot;Pass&quot;, &quot;Fail&quot;)
+print(students)
+
+high_scorers &lt;- students[students$Marks &gt; 75, ]
+print(high_scorers)</code></pre>
+        </article>
+        <article class="experiment-item" id="item-4-3" data-search="4.3 average marks by grade calculates average marks grouped by grade.">
+          <div class="item-head">
+            <div><span class="item-index">4.3</span><h3>Average marks by grade</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-4-3', this)">COPY CODE</button>
+          </div>
+          <p class="description">Calculates average Marks grouped by Grade.</p>
+          <pre><code id="code-4-3">grade_average &lt;- aggregate(
+    Marks ~ Grade,
+    data = students,
+    FUN = mean
+)
+
+print(grade_average)</code></pre>
+        </article>
+        <article class="experiment-item" id="item-4-4" data-search="4.4 bar plot, pie chart and histogram creates a bar plot and pie chart for grade and a histogram for marks.">
+          <div class="item-head">
+            <div><span class="item-index">4.4</span><h3>Bar plot, pie chart and histogram</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-4-4', this)">COPY CODE</button>
+          </div>
+          <p class="description">Creates a bar plot and pie chart for Grade and a histogram for Marks.</p>
+          <pre><code id="code-4-4">barplot(
+    table(students$Grade),
+    main = &quot;Grade Distribution&quot;,
+    xlab = &quot;Grade&quot;,
+    ylab = &quot;Number of Students&quot;
+)
+
+pie(
+    table(students$Grade),
+    main = &quot;Grade Distribution&quot;
+)
+
+hist(
+    students$Marks,
+    main = &quot;Distribution of Marks&quot;,
+    xlab = &quot;Marks&quot;
+)</code></pre>
+        </article>
+        <article class="experiment-item" id="item-4-5" data-search="4.5 student result using average marks and attendance uses marks and attendance to assign a result and grade; the csv must contain the referenced columns.">
+          <div class="item-head">
+            <div><span class="item-index">4.5</span><h3>Student result using average marks and attendance</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-4-5', this)">COPY CODE</button>
+          </div>
+          <p class="description">Uses marks and attendance to assign a result and grade; the CSV must contain the referenced columns.</p>
+          <pre><code id="code-4-5"># Example CSV columns: ID, Name, Math, Science, English, Attendance
+students &lt;- read.csv(&quot;students.csv&quot;)
+
+students$Average &lt;- rowMeans(
+    students[, c(&quot;Math&quot;, &quot;Science&quot;, &quot;English&quot;)],
+    na.rm = TRUE
+)
+
+students$Result &lt;- ifelse(
+    students$Average &gt;= 40 &amp; students$Attendance &gt;= 75,
+    &quot;Pass&quot;,
+    &quot;Fail&quot;
+)
+
+students$Grade &lt;- ifelse(
+    students$Average &lt; 50, &quot;C&quot;,
+    ifelse(students$Average &lt;= 70, &quot;B&quot;,
+        ifelse(students$Average &lt;= 85, &quot;A&quot;, &quot;Distinction&quot;)
+    )
+)
+
+print(students)
+print(aggregate(Average ~ Grade, data = students, FUN = mean))
+barplot(table(students$Grade), main = &quot;Grade Distribution&quot;)
+hist(students$Attendance, main = &quot;Attendance Distribution&quot;,
+     xlab = &quot;Attendance (%)&quot;)</code></pre>
+        </article>
+      </section>
+      <section class="experiment-panel" id="experiment-5" data-title="reshaping, joins and interactive plots">
+        <div class="panel-kicker">R PROGRAMMING / EXPERIMENT 05</div>
+        <h2>Reshaping, joins and interactive plots</h2>
+        <p class="panel-intro">Reference material from your uploaded R Programming Practical Code Book.</p>
+        
+        <article class="experiment-item" id="item-5-1" data-search="5.1 load packages uses dplyr, tidyr, ggplot2 and plotly. install packages only if they are missing.">
+          <div class="item-head">
+            <div><span class="item-index">5.1</span><h3>Load packages</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-5-1', this)">COPY CODE</button>
+          </div>
+          <p class="description">Uses dplyr, tidyr, ggplot2 and plotly. Install packages only if they are missing.</p>
+          <pre><code id="code-5-1"># Install once if needed:
+install.packages(c(&quot;dplyr&quot;, &quot;tidyr&quot;, &quot;ggplot2&quot;, &quot;plotly&quot;))
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(plotly)</code></pre>
+        </article>
+        <article class="experiment-item" id="item-5-2" data-search="5.2 wide-to-long and long-to-wide uses pivot_longer() and pivot_wider() from tidyr to reshape a table.">
+          <div class="item-head">
+            <div><span class="item-index">5.2</span><h3>Wide-to-long and long-to-wide</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-5-2', this)">COPY CODE</button>
+          </div>
+          <p class="description">Uses pivot_longer() and pivot_wider() from tidyr to reshape a table.</p>
+          <pre><code id="code-5-2">students &lt;- data.frame(
+    ID = 1:3,
+    Name = c(&quot;Rahul&quot;, &quot;Anita&quot;, &quot;Suresh&quot;),
+    Math = c(78, 85, 92),
+    Science = c(80, 75, 88)
+)
+
+long_data &lt;- pivot_longer(
+    students,
+    cols = c(Math, Science),
+    names_to = &quot;Subject&quot;,
+    values_to = &quot;Marks&quot;
+)
+print(long_data)
+
+wide_data &lt;- pivot_wider(
+    long_data,
+    names_from = Subject,
+    values_from = Marks
+)
+print(wide_data)</code></pre>
+        </article>
+        <article class="experiment-item" id="item-5-3" data-search="5.3 table joins demonstrates inner, left, right and full joins using id as the key.">
+          <div class="item-head">
+            <div><span class="item-index">5.3</span><h3>Table joins</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-5-3', this)">COPY CODE</button>
+          </div>
+          <p class="description">Demonstrates inner, left, right and full joins using ID as the key.</p>
+          <pre><code id="code-5-3">students &lt;- data.frame(
+    ID = c(1, 2, 3),
+    Name = c(&quot;Rahul&quot;, &quot;Anita&quot;, &quot;Suresh&quot;),
+    Math = c(78, 85, 92)
+)
+
+attendance &lt;- data.frame(
+    ID = c(1, 2, 4),
+    Attendance = c(85, 90, 75)
+)
+
+print(inner_join(students, attendance, by = &quot;ID&quot;))
+print(left_join(students, attendance, by = &quot;ID&quot;))
+print(right_join(students, attendance, by = &quot;ID&quot;))
+print(full_join(students, attendance, by = &quot;ID&quot;))</code></pre>
+        </article>
+        <article class="experiment-item" id="item-5-4" data-search="5.4 interactive plot using ggplotly() creates a scatter plot and converts it to an interactive plot using plotly.">
+          <div class="item-head">
+            <div><span class="item-index">5.4</span><h3>Interactive plot using ggplotly()</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-5-4', this)">COPY CODE</button>
+          </div>
+          <p class="description">Creates a scatter plot and converts it to an interactive plot using plotly.</p>
+          <pre><code id="code-5-4">students &lt;- data.frame(
+    Name = c(&quot;Rahul&quot;, &quot;Anita&quot;, &quot;Suresh&quot;, &quot;Pooja&quot;, &quot;Amit&quot;),
+    Math = c(78, 85, 92, 65, 70),
+    Attendance = c(85, 90, 70, 65, 75)
+)
+
+p &lt;- ggplot(
+    students,
+    aes(x = Attendance, y = Math, label = Name)
+) +
+    geom_point(size = 3) +
+    labs(
+        title = &quot;Math Marks vs Attendance&quot;,
+        x = &quot;Attendance (%)&quot;,
+        y = &quot;Math Marks&quot;
+    )
+
+ggplotly(p)</code></pre>
+        </article>
+      </section>
+      <section class="experiment-panel" id="experiment-6" data-title="data cleaning, descriptive statistics and visualization">
+        <div class="panel-kicker">R PROGRAMMING / EXPERIMENT 06</div>
+        <h2>Data cleaning, descriptive statistics and visualization</h2>
+        <p class="panel-intro">Reference material from your uploaded R Programming Practical Code Book.</p>
+        
+        <article class="experiment-item" id="item-6-1" data-search="6.1 airquality dataset: inspect and clean missing values uses r&#x27;s built-in airquality dataset, checks missing values, replaces missing ozone/solar.r values with medians, and removes duplicate rows.">
+          <div class="item-head">
+            <div><span class="item-index">6.1</span><h3>Airquality dataset: inspect and clean missing values</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-6-1', this)">COPY CODE</button>
+          </div>
+          <p class="description">Uses R&#x27;s built-in airquality dataset, checks missing values, replaces missing Ozone/Solar.R values with medians, and removes duplicate rows.</p>
+          <pre><code id="code-6-1"># Built-in R dataset, so no external CSV is needed.
+data(&quot;airquality&quot;)
+aq &lt;- airquality
+
+str(aq)
+summary(aq)
+colSums(is.na(aq))
+
+aq$Ozone[is.na(aq$Ozone)] &lt;- median(aq$Ozone, na.rm = TRUE)
+aq$Solar.R[is.na(aq$Solar.R)] &lt;- median(aq$Solar.R, na.rm = TRUE)
+
+# Remove duplicate rows using dplyr
+library(dplyr)
+aq &lt;- distinct(aq)
+
+summary(aq)</code></pre>
+        </article>
+        <article class="experiment-item" id="item-6-2" data-search="6.2 descriptive statistics calculates mean, median, variance, standard deviation and optional skewness/kurtosis.">
+          <div class="item-head">
+            <div><span class="item-index">6.2</span><h3>Descriptive statistics</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-6-2', this)">COPY CODE</button>
+          </div>
+          <p class="description">Calculates mean, median, variance, standard deviation and optional skewness/kurtosis.</p>
+          <pre><code id="code-6-2">mean(aq$Ozone, na.rm = TRUE)
+median(aq$Ozone, na.rm = TRUE)
+var(aq$Ozone, na.rm = TRUE)
+sd(aq$Ozone, na.rm = TRUE)
+
+# Optional skewness and kurtosis require the moments package.
+# install.packages(&quot;moments&quot;)
+library(moments)
+skewness(aq$Ozone, na.rm = TRUE)
+kurtosis(aq$Ozone, na.rm = TRUE)</code></pre>
+        </article>
+        <article class="experiment-item" id="item-6-3" data-search="6.3 histogram, boxplot and scatter plot creates histogram, boxplot and scatter plot, then calculates correlation.">
+          <div class="item-head">
+            <div><span class="item-index">6.3</span><h3>Histogram, boxplot and scatter plot</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-6-3', this)">COPY CODE</button>
+          </div>
+          <p class="description">Creates histogram, boxplot and scatter plot, then calculates correlation.</p>
+          <pre><code id="code-6-3">hist(aq$Ozone,
+     main = &quot;Ozone Distribution&quot;,
+     xlab = &quot;Ozone&quot;)
+
+boxplot(Temp ~ Month, data = aq,
+        main = &quot;Temperature by Month&quot;,
+        xlab = &quot;Month&quot;,
+        ylab = &quot;Temperature&quot;)
+
+plot(aq$Wind, aq$Temp,
+     main = &quot;Wind vs Temperature&quot;,
+     xlab = &quot;Wind&quot;,
+     ylab = &quot;Temperature&quot;)
+
+cor(aq$Wind, aq$Temp, use = &quot;complete.obs&quot;)</code></pre>
+        </article>
+        <article class="experiment-item" id="item-6-4" data-search="6.4 air quality csv: correlation and pivot_longer template requires the csv supplied for the practical; its columns and path must match the file.">
+          <div class="item-head">
+            <div><span class="item-index">6.4</span><h3>Air quality CSV: correlation and pivot_longer template</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-6-4', this)">COPY CODE</button>
+          </div>
+          <p class="description">Requires the CSV supplied for the practical; its columns and path must match the file.</p>
+          <pre><code id="code-6-4"># Replace the file path with the one provided in your practical.
+air &lt;- read.csv(&quot;air_quality.csv&quot;)
+str(air)
+summary(air)
+
+# Select numeric columns before calculating correlation.
+numeric_data &lt;- air[, sapply(air, is.numeric)]
+numeric_data &lt;- na.omit(numeric_data)
+cor_matrix &lt;- cor(numeric_data)
+print(cor_matrix)
+
+# Convert correlation matrix to a data frame and reshape.
+library(tidyr)
+cor_df &lt;- as.data.frame(cor_matrix)
+cor_df$Variable1 &lt;- rownames(cor_df)
+
+cor_long &lt;- pivot_longer(
+    cor_df,
+    cols = -Variable1,
+    names_to = &quot;Variable2&quot;,
+    values_to = &quot;Correlation&quot;
+)
+print(cor_long)</code></pre>
+        </article>
+      </section>
+      <section class="experiment-panel" id="experiment-7" data-title="simple and multiple linear regression">
+        <div class="panel-kicker">R PROGRAMMING / EXPERIMENT 07</div>
+        <h2>Simple and multiple linear regression</h2>
+        <p class="panel-intro">Reference material from your uploaded R Programming Practical Code Book.</p>
+        
+        <article class="experiment-item" id="item-7-1" data-search="7.1 simple linear regression using advertising data fits a simple linear regression model predicting sales from tv advertising. requires advertising.csv with matching columns.">
+          <div class="item-head">
+            <div><span class="item-index">7.1</span><h3>Simple linear regression using Advertising data</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-7-1', this)">COPY CODE</button>
+          </div>
+          <p class="description">Fits a simple linear regression model predicting Sales from TV advertising. Requires advertising.csv with matching columns.</p>
+          <pre><code id="code-7-1"># If advertising.csv is supplied, put it in the working directory.
+advertising &lt;- read.csv(&quot;advertising.csv&quot;)
+
+model_simple &lt;- lm(Sales ~ TV, data = advertising)
+summary(model_simple)
+
+plot(advertising$TV, advertising$Sales,
+     xlab = &quot;TV Advertising&quot;,
+     ylab = &quot;Sales&quot;,
+     main = &quot;TV Advertising vs Sales&quot;)
+abline(model_simple)</code></pre>
+        </article>
+        <article class="experiment-item" id="item-7-2" data-search="7.2 multiple linear regression fits a multiple linear regression model using tv, radio and newspaper predictors.">
+          <div class="item-head">
+            <div><span class="item-index">7.2</span><h3>Multiple linear regression</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-7-2', this)">COPY CODE</button>
+          </div>
+          <p class="description">Fits a multiple linear regression model using TV, Radio and Newspaper predictors.</p>
+          <pre><code id="code-7-2">model_multiple &lt;- lm(
+    Sales ~ TV + Radio + Newspaper,
+    data = advertising
+)
+
+summary(model_multiple)</code></pre>
+        </article>
+        <article class="experiment-item" id="item-7-3" data-search="7.3 predictions, residuals and diagnostics generates predictions, residual diagnostics and an optional vif check using car.">
+          <div class="item-head">
+            <div><span class="item-index">7.3</span><h3>Predictions, residuals and diagnostics</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-7-3', this)">COPY CODE</button>
+          </div>
+          <p class="description">Generates predictions, residual diagnostics and an optional VIF check using car.</p>
+          <pre><code id="code-7-3">predicted_sales &lt;- predict(model_multiple, newdata = advertising)
+head(predicted_sales)
+
+residual_values &lt;- residuals(model_multiple)
+head(residual_values)
+
+plot(model_multiple$fitted.values, residual_values,
+     xlab = &quot;Fitted Values&quot;,
+     ylab = &quot;Residuals&quot;,
+     main = &quot;Residuals vs Fitted&quot;)
+abline(h = 0, lty = 2)
+
+qqnorm(residual_values)
+qqline(residual_values)
+
+# Optional multicollinearity check:
+# install.packages(&quot;car&quot;)
+library(car)
+vif(model_multiple)</code></pre>
+        </article>
+      </section>
+      <section class="experiment-panel" id="experiment-8" data-title="classification using the iris dataset">
+        <div class="panel-kicker">R PROGRAMMING / EXPERIMENT 08</div>
+        <h2>Classification using the Iris dataset</h2>
+        <p class="panel-intro">Reference material from your uploaded R Programming Practical Code Book.</p>
+        
+        <article class="experiment-item" id="item-8-1" data-search="8.1 prepare iris data and create train/test split uses the built-in iris dataset and creates a reproducible 70/30 train/test split.">
+          <div class="item-head">
+            <div><span class="item-index">8.1</span><h3>Prepare Iris data and create train/test split</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-8-1', this)">COPY CODE</button>
+          </div>
+          <p class="description">Uses the built-in Iris dataset and creates a reproducible 70/30 train/test split.</p>
+          <pre><code id="code-8-1">data(iris)
+iris_data &lt;- iris
+iris_data$Species &lt;- factor(iris_data$Species)
+
+set.seed(123)
+train_index &lt;- sample(
+    seq_len(nrow(iris_data)),
+    size = floor(0.70 * nrow(iris_data))
+)
+
+train_data &lt;- iris_data[train_index, ]
+test_data &lt;- iris_data[-train_index, ]
+
+str(iris_data)
+summary(iris_data)</code></pre>
+        </article>
+        <article class="experiment-item" id="item-8-2" data-search="8.2 logistic regression: setosa vs non-setosa fits a binary logistic regression model for setosa versus non-setosa.">
+          <div class="item-head">
+            <div><span class="item-index">8.2</span><h3>Logistic regression: setosa vs non-setosa</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-8-2', this)">COPY CODE</button>
+          </div>
+          <p class="description">Fits a binary logistic regression model for setosa versus non-setosa.</p>
+          <pre><code id="code-8-2">train_log &lt;- train_data
+test_log &lt;- test_data
+
+train_log$IsSetosa &lt;- ifelse(train_log$Species == &quot;setosa&quot;, 1, 0)
+test_log$IsSetosa &lt;- ifelse(test_log$Species == &quot;setosa&quot;, 1, 0)
+
+log_model &lt;- glm(
+    IsSetosa ~ Sepal.Length + Sepal.Width +
+        Petal.Length + Petal.Width,
+    data = train_log,
+    family = binomial
+)
+
+log_prob &lt;- predict(log_model, newdata = test_log, type = &quot;response&quot;)
+log_pred &lt;- ifelse(log_prob &gt;= 0.5, 1, 0)
+
+table(Actual = test_log$IsSetosa, Predicted = log_pred)
+mean(log_pred == test_log$IsSetosa)</code></pre>
+        </article>
+        <article class="experiment-item" id="item-8-3" data-search="8.3 decision tree classification trains a decision tree to predict all three iris species; requires rpart and rpart.plot.">
+          <div class="item-head">
+            <div><span class="item-index">8.3</span><h3>Decision tree classification</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-8-3', this)">COPY CODE</button>
+          </div>
+          <p class="description">Trains a decision tree to predict all three Iris species; requires rpart and rpart.plot.</p>
+          <pre><code id="code-8-3"># Install once if needed:
+# install.packages(c(&quot;rpart&quot;, &quot;rpart.plot&quot;))
+library(rpart)
+library(rpart.plot)
+
+tree_model &lt;- rpart(
+    Species ~ Sepal.Length + Sepal.Width +
+        Petal.Length + Petal.Width,
+    data = train_data,
+    method = &quot;class&quot;
+)
+
+rpart.plot(tree_model)
+
+tree_pred &lt;- predict(tree_model, newdata = test_data, type = &quot;class&quot;)
+tree_cm &lt;- table(Actual = test_data$Species, Predicted = tree_pred)
+print(tree_cm)
+tree_accuracy &lt;- mean(tree_pred == test_data$Species)
+print(tree_accuracy)</code></pre>
+        </article>
+        <article class="experiment-item" id="item-8-4" data-search="8.4 knn classification with normalized predictors runs k-nearest neighbours with normalized predictors and k = 5.">
+          <div class="item-head">
+            <div><span class="item-index">8.4</span><h3>kNN classification with normalized predictors</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-8-4', this)">COPY CODE</button>
+          </div>
+          <p class="description">Runs k-nearest neighbours with normalized predictors and k = 5.</p>
+          <pre><code id="code-8-4"># install.packages(&quot;class&quot;) # usually included with R
+library(class)
+
+features &lt;- c(&quot;Sepal.Length&quot;, &quot;Sepal.Width&quot;,
+              &quot;Petal.Length&quot;, &quot;Petal.Width&quot;)
+
+train_x &lt;- train_data[, features]
+test_x &lt;- test_data[, features]
+
+# Normalize using training-set mean and standard deviation.
+train_means &lt;- sapply(train_x, mean)
+train_sds &lt;- sapply(train_x, sd)
+train_sds[train_sds == 0] &lt;- 1
+
+train_scaled &lt;- scale(train_x, center = train_means, scale = train_sds)
+test_scaled &lt;- scale(test_x, center = train_means, scale = train_sds)
+
+knn_pred &lt;- knn(
+    train = train_scaled,
+    test = test_scaled,
+    cl = train_data$Species,
+    k = 5
+)
+
+knn_cm &lt;- table(Actual = test_data$Species, Predicted = knn_pred)
+print(knn_cm)
+knn_accuracy &lt;- mean(knn_pred == test_data$Species)
+print(knn_accuracy)</code></pre>
+        </article>
+        <article class="experiment-item" id="item-8-5" data-search="8.5 compare model accuracy compares displayed accuracy values; logistic regression is binary while tree and knn classify all three species, as noted in the source.">
+          <div class="item-head">
+            <div><span class="item-index">8.5</span><h3>Compare model accuracy</h3></div>
+            <button class="copy-btn" onclick="copyCode('code-8-5', this)">COPY CODE</button>
+          </div>
+          <p class="description">Compares displayed accuracy values; logistic regression is binary while tree and kNN classify all three species, as noted in the source.</p>
+          <pre><code id="code-8-5">print(paste(&quot;Decision Tree Accuracy:&quot;, round(tree_accuracy, 3)))
+print(paste(&quot;kNN Accuracy:&quot;, round(knn_accuracy, 3)))
+print(paste(&quot;Logistic Regression Accuracy:&quot;,
+            round(mean(log_pred == test_log$IsSetosa), 3)))</code></pre>
+        </article>
+      </section>
+
+  <section id="exam-view" class="hidden">
+    <div class="panel-kicker">PRACTICAL SKILLS / READ · ADAPT · EXPLAIN</div>
+    <h2>Exam Playbook: understand the code</h2>
+    <p class="panel-intro">Use this when the examiner gives you a dataset that is different from the sample. The templates below are supplemental exam guidance, not additional numbered experiments from your code book.</p>
+
+    <article class="experiment-item">
+      <div class="item-head"><div><span class="item-index">FIELD GUIDE 01</span><h3>First five minutes with an unfamiliar CSV</h3></div>
+      <button class="copy-btn" onclick="copyCode('exam-code-1', this)">COPY CODE</button></div>
+      <p class="description">Choose the dataset rather than guessing its path. Inspect names and types before writing analysis. Run one line at a time and check the output.</p>
+      <pre><code id="exam-code-1"># Select the CSV file supplied by the examiner
+data <- read.csv(file.choose())
+
+# Understand the data before using column names
+head(data)
+str(data)
+names(data)
+dim(data)
+summary(data)
+colSums(is.na(data))</code></pre>
+      <p class="description"><strong>Know what each line does:</strong> <code>read.csv()</code> imports the file; <code>head()</code> previews rows; <code>str()</code> shows column types; <code>names()</code> shows exact column names; <code>dim()</code> gives rows and columns; <code>summary()</code> gives quick summaries; <code>is.na()</code> checks missing values.</p>
+    </article>
+
+    <article class="experiment-item">
+      <div class="item-head"><div><span class="item-index">FIELD GUIDE 02</span><h3>Adapt the code to the actual column names</h3></div>
+      <button class="copy-btn" onclick="copyCode('exam-code-2', this)">COPY CODE</button></div>
+      <p class="description">These are examples only. Replace <code>Marks</code>, <code>Grade</code>, <code>Sales</code>, and other names with the exact names shown by <code>names(data)</code>. R is case-sensitive.</p>
+      <pre><code id="exam-code-2"># Filter rows (replace Marks with a real numeric column)
+data[data$Marks > 75, ]
+
+# Create a new column from a condition
+data$Result <- ifelse(data$Marks >= 40, "Pass", "Fail")
+
+# Group and calculate a mean (requires a grouping column)
+aggregate(Marks ~ Grade, data = data, FUN = mean)
+
+# Plot a numeric column
+hist(data$Marks, main = "Marks Distribution", xlab = "Marks")
+
+# Scatter plot: one numeric column against another
+plot(data$Hours, data$Marks,
+     xlab = "Hours", ylab = "Marks")</code></pre>
+      <p class="description"><strong>Do not run this unchanged unless those columns exist.</strong> If your dataset uses different names, substitute the correct ones. If you do not know a column's type, check <code>str(data)</code>.</p>
+    </article>
+
+    <article class="experiment-item">
+      <div class="item-head"><div><span class="item-index">FIELD GUIDE 03</span><h3>Regression template for a supplied dataset</h3></div>
+      <button class="copy-btn" onclick="copyCode('exam-code-3', this)">COPY CODE</button></div>
+      <p class="description">Use when the task asks you to predict a numeric outcome. The formula is <code>outcome ~ predictor</code>; both names must exist in your data.</p>
+      <pre><code id="exam-code-3"># Replace Outcome and Predictor with real column names
+model <- lm(Outcome ~ Predictor, data = data)
+summary(model)
+
+predicted <- predict(model, newdata = data)
+head(predicted)
+
+plot(data$Predictor, data$Outcome,
+     xlab = "Predictor", ylab = "Outcome")
+abline(model)</code></pre>
+      <p class="description"><strong>Explain it aloud:</strong> <code>lm()</code> fits a linear model; the left side of <code>~</code> is the outcome; the right side is the predictor; <code>summary()</code> reports model details; <code>predict()</code> estimates outcomes for supplied rows.</p>
+    </article>
+
+    <article class="experiment-item">
+      <div class="item-head"><div><span class="item-index">FIELD GUIDE 04</span><h3>Common errors and how to fix them</h3></div></div>
+      <ul>
+        <li><strong>“cannot open file”:</strong> choose the correct file with <code>file.choose()</code>, or check the working directory with <code>getwd()</code>.</li>
+        <li><strong>“object not found”:</strong> check spelling and capitalization with <code>names(data)</code>; ensure the object was created in this session.</li>
+        <li><strong>“undefined columns selected”:</strong> the requested column is not in the data; inspect <code>names(data)</code> and update the code.</li>
+        <li><strong>“could not find function”:</strong> the function may come from a package; confirm it is installed, then call <code>library(packageName)</code>.</li>
+        <li><strong>Missing values cause NA output:</strong> inspect with <code>colSums(is.na(data))</code>; use <code>na.rm = TRUE</code> only where appropriate, or handle missing rows deliberately.</li>
+        <li><strong>Plot or model fails:</strong> verify the selected columns are numeric when required and that the task's variables match the formula.</li>
+      </ul>
+    </article>
+
+    <article class="experiment-item">
+      <div class="item-head"><div><span class="item-index">SELF-TEST</span><h3>Can you explain these without looking?</h3></div></div>
+      <p class="description">Try answering first. Open each answer only after you have attempted it.</p>
+      <details><summary>What is the difference between &lt;- and ==?</summary><p><code>&lt;-</code> assigns a value to an object. <code>==</code> compares two values and returns TRUE or FALSE.</p></details>
+      <details><summary>What does %% do in the even/odd program?</summary><p>It returns the remainder after division. If <code>n %% 2 == 0</code>, the number is even.</p></details>
+      <details><summary>Why use set.seed(123) before splitting Iris data?</summary><p>It makes the random split reproducible so the same sample selection can be repeated in a matching R environment.</p></details>
+      <details><summary>What is the difference between a data frame and a list?</summary><p>A data frame stores tabular data with equal-length columns. A list can hold components of different types and sizes.</p></details>
+      <details><summary>Why does kNN normalize predictors?</summary><p>kNN uses distances. Scaling helps variables with larger numeric ranges from dominating those distances.</p></details>
+      <details><summary>Why is logistic regression in the Iris example not directly comparable to the tree accuracy?</summary><p>The logistic model predicts setosa versus non-setosa (two classes), while the tree and kNN predict all three Iris species. They are different classification tasks.</p></details>
+      <details><summary>What must you check before running a CSV program in the exam?</summary><p>The file path, exact column names, data types, missing values, and whether required packages are installed.</p></details>
+    </article>
+
+    <article class="experiment-item">
+      <div class="item-head"><div><span class="item-index">EXAM RULE</span><h3>Use the website to learn, not to blindly paste</h3></div></div>
+      <p class="description">For each program: (1) state its purpose, (2) identify the input and output, (3) explain the important functions, (4) predict the result for a small example, and (5) change one value or column name yourself. In the exam, use only the tools and resources your examiner permits.</p>
+    </article>
+  </section>
+
+  <div class="footer"><span>R / PRACTICAL ARCHIVE</span><span>SOURCE EXPERIMENTS 1–8 · EXAM PLAYBOOK</span></div>
+</main>
+</div>
+<div class="quick-hide" id="quick-hide"><span>ARCHIVE PAUSED</span><button onclick="toggleHide()">RETURN TO ARCHIVE · ESC</button></div>
+<script>
+const panels = [...document.querySelectorAll('.experiment-panel')];
+function hideViews(){document.getElementById('home-view').classList.add('hidden');document.getElementById('setup-view').classList.add('hidden');panels.forEach(p=>p.classList.remove('active'));}
+function markNav(el){document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));if(el)el.classList.add('active');}
+function showView(view,el){hideViews();markNav(el);if(view==='home'){document.getElementById('home-view').classList.remove('hidden')}else if(view==='setup'){document.getElementById('setup-view').classList.remove('hidden')}else if(view==='exam'){document.getElementById('exam-view').classList.remove('hidden')}}
+function selectExperiment(id,el){hideViews();const p=document.getElementById('experiment-'+id);if(p)p.classList.add('active');if(el)markNav(el);else{markNav(document.querySelector('#subject-nav .nav-btn:nth-child('+id+')'))}window.scrollTo({top:0,behavior:'instant'});}
+async function copyCode(id,btn){const el=document.getElementById(id);if(!el)return;try{await navigator.clipboard.writeText(el.innerText);btn.textContent='COPIED';setTimeout(()=>btn.textContent='COPY CODE',1200)}catch(e){const r=document.createRange();r.selectNodeContents(el);const s=window.getSelection();s.removeAllRanges();s.addRange(r);btn.textContent='SELECTED — COPY';}}
+function searchItems(q){q=q.trim().toLowerCase();const resultBox=document.getElementById('search-results'),list=document.getElementById('result-list');if(!q){resultBox.classList.add('hidden');document.querySelectorAll('.subject-card').forEach(c=>c.classList.remove('hidden'));return}
+const hits=[];document.querySelectorAll('.experiment-item').forEach((item)=>{const text=(item.innerText+' '+(item.dataset.search||'')).toLowerCase();if(text.includes(q)){const panel=item.closest('.experiment-panel');hits.push({title:item.querySelector('h3')?.innerText||item.querySelector('h2')?.innerText||'Setup reference',exp:panel?.id.replace('experiment-',''),id:item.id,desc:item.querySelector('.description')?.innerText||''})}});
+document.querySelectorAll('.subject-card').forEach(c=>{const exp=document.getElementById('experiment-'+c.dataset.exp);c.classList.toggle('hidden',!exp?.innerText.toLowerCase().includes(q))});
+list.innerHTML='';hits.forEach(h=>{const b=document.createElement('button');b.className='subject-card';b.style.width='100%';b.style.marginBottom='7px';b.innerHTML='<span class="card-num">EXPERIMENT '+String(h.exp||'SETUP').padStart(2,'0')+'</span><span class="card-title"></span><span class="card-meta"></span>';b.querySelector('.card-title').textContent=h.title;b.querySelector('.card-meta').textContent=h.desc;b.onclick=()=>{if(h.exp){selectExperiment(Number(h.exp));setTimeout(()=>document.getElementById(h.id)?.scrollIntoView({behavior:'smooth',block:'start'}),50)}else showView('setup',document.querySelector('[data-view="setup"]'))};list.appendChild(b)});
+document.getElementById('result-count').textContent=hits.length+' MATCHES';resultBox.classList.remove('hidden')}
+function clearSearch(){document.getElementById('search').value='';searchItems('')}
+function setDisplay(){const b=document.getElementById('brightness').value,c=document.getElementById('contrast').value;document.documentElement.style.setProperty('--bright',(b/100));document.documentElement.style.setProperty('--contrast',(c/100));document.getElementById('brightness-out').value=b+'%';document.getElementById('contrast-out').value=c+'%';localStorage.setItem('rarchive-display',JSON.stringify({b,c,t:document.getElementById('textsize').value}))}
+function setTextSize(){const t=document.getElementById('textsize').value;document.body.style.fontSize=t+'px';document.getElementById('textsize-out').value=t+'px';setDisplay()}
+function resetDisplay(){document.getElementById('brightness').value=65;document.getElementById('contrast').value=78;document.getElementById('textsize').value=13;setTextSize()}
+function toggleHide(){document.getElementById('quick-hide').classList.toggle('show')}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.getElementById('quick-hide').classList.remove('show')}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();document.getElementById('search').focus()}});
+try{const saved=JSON.parse(localStorage.getItem('rarchive-display')||'null');if(saved){document.getElementById('brightness').value=saved.b;document.getElementById('contrast').value=saved.c;document.getElementById('textsize').value=saved.t;setTextSize()}}catch(e){}
+</script>
+</body>
+</html>
